@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.env.local
+server/data/db.json
+server/data/files/
+server/data/exports/
+*.log
+.DS_Store
+*.tsbuildinfo
+.vite/

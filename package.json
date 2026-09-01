@@ -1,0 +1,22 @@
+{
+  "name": "gradesense",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,web -c cyan,magenta \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:server": "npm run dev -w server",
+    "dev:web": "npm run dev -w web",
+    "build": "npm run build -w server && npm run build -w web",
+    "test": "npm run test -w server",
+    "seed": "npm run seed -w server",
+    "example": "npm run example -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
