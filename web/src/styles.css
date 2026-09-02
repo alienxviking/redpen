@@ -172,6 +172,8 @@ label > select, label > textarea { margin-top: 3px; color: var(--ink); }
 .uploaded { color: var(--ok); font-size: 12px; margin-top: 6px; }
 .upload-panel .primary.big { margin-top: 14px; }
 
+/* The history grows without bound; keep it a scannable panel, not a long page. */
+.history { max-height: 420px; overflow-y: auto; }
 .history li { border-bottom: 1px solid var(--border); }
 .history-row {
   display: grid;
