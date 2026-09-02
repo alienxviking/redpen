@@ -52,6 +52,21 @@ export const config = {
   /** Per-request ceiling for the grading call. */
   maxTokens: Number(process.env.GRADER_MAX_TOKENS ?? 16000),
   requestTimeoutMs: Number(process.env.GRADER_TIMEOUT_MS ?? 120_000),
+  /** Transcribing a handwritten paper takes longer than grading typed text. */
+  visionTimeoutMs: Number(process.env.VISION_TIMEOUT_MS ?? 180_000),
+  /**
+   * Model used to read a paper with no text layer, and the models to fall back to.
+   * Free-tier 503s are per-model rather than account-wide, so having somewhere else to
+   * go matters more here than picking the single best model - a paper that cannot be
+   * transcribed cannot be marked at all.
+   */
+  visionModel: process.env.VISION_MODEL?.trim() || "gemini-flash-lite-latest",
+  visionFallbackModels: (
+    process.env.VISION_FALLBACK_MODELS?.trim() || "gemini-flash-latest,gemini-2.0-flash"
+  )
+    .split(",")
+    .map((m) => m.trim())
+    .filter(Boolean),
   maxUploadBytes: Number(process.env.MAX_UPLOAD_BYTES ?? 25 * 1024 * 1024),
 };
 

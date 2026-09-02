@@ -3,6 +3,7 @@ import multer from "multer";
 import { config } from "../config.js";
 import { loadRubric } from "../domain/rubric.js";
 import { extractPdf } from "../services/pdf/extractText.js";
+import { visionExtract } from "../services/pdf/visionExtract.js";
 import {
   getDocument,
   listDocuments,
@@ -52,6 +53,28 @@ documentsRouter.post("/", upload.single("file"), async (req, res, next) => {
       });
     }
 
+    /*
+     * No text layer means a scan or a handwritten script. Rather than refuse it, read
+     * the page image: the vision extractor returns the same positioned-token structure,
+     * so the rest of the pipeline neither changes nor needs to know. pdf.js still gives
+     * us real page geometry here, which is what keeps the transcribed boxes honest.
+     */
+    let visionProblem: string | undefined;
+    let transcribed = false;
+    if (extraction.isBlank) {
+      const outcome = await visionExtract(
+        file.buffer,
+        extraction.pages.map((p) => ({ width: p.width, height: p.height })),
+        file.mimetype || "application/pdf",
+      );
+      if (outcome.document) {
+        extraction = outcome.document;
+        transcribed = true;
+      } else {
+        visionProblem = outcome.problem;
+      }
+    }
+
     const doc = await saveDocument({
       kind,
       filename: file.originalname,
@@ -62,9 +85,12 @@ documentsRouter.post("/", upload.single("file"), async (req, res, next) => {
 
     res.status(201).json({
       document: doc,
-      warning: doc.isBlank
-        ? "No text could be extracted from this PDF. If it is a scan it will need OCR before it can be graded."
-        : undefined,
+      transcribed,
+      warning: transcribed
+        ? `This paper had no text layer, so ${extraction.tokens.length} lines were transcribed from the page image. Marks will be based on that transcription and flagged for review.`
+        : doc.isBlank
+          ? `No text could be extracted from this PDF.${visionProblem ? ` ${visionProblem}` : ""} It will need OCR or manual marking.`
+          : undefined,
     });
   } catch (error) {
     next(error);

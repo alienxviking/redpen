@@ -49,6 +49,13 @@ export interface ExtractedDocument {
   isBlank: boolean;
   /** Characters of non-whitespace text found. */
   charCount: number;
+  /**
+   * Where the text came from. `text-layer` is the PDF's own embedded text. `vision`
+   * means the page had no text layer - a scan or a handwritten script - so the text
+   * and its positions were transcribed from the page image. That is fallible, and the
+   * grade must say so rather than treat it as ground truth.
+   */
+  source: "text-layer" | "vision";
 }
 
 /* ------------------------------------------------------------------ rubric */
@@ -149,7 +156,8 @@ export interface ReviewFlag {
     | "model_unavailable"
     | "marks_clamped"
     | "criteria_missing"
-    | "no_evidence";
+    | "no_evidence"
+    | "ocr_extraction";
   message: string;
 }
 

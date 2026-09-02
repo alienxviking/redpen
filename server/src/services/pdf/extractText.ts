@@ -159,9 +159,11 @@ export async function extractPdf(data: Uint8Array | Buffer): Promise<ExtractedDo
     pages,
     tokens,
     charCount,
-    // A scanned/handwritten paper extracts to nothing; callers treat that as blank
-    // and route it to human review rather than pretending to have graded it.
+    // A scanned or handwritten paper has no text layer and extracts to nothing. Callers
+    // either route it to human review or hand it to the vision extractor, which returns
+    // this same shape transcribed from the page image.
     isBlank: charCount === 0,
+    source: "text-layer",
   };
 }
 

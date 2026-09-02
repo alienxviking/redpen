@@ -22,6 +22,10 @@ beforeAll(async () => {
   process.env.GRADESENSE_DATA_DIR = dataDir;
   process.env.GRADER_PROVIDER = "mock";
   delete process.env.ANTHROPIC_API_KEY;
+  // Also unset the vision key: a blank upload would otherwise transcribe over the
+  // network, making the suite slow and non-deterministic.
+  delete process.env.GEMINI_API_KEY;
+  delete process.env.GOOGLE_API_KEY;
 
   const { createApp } = await import("../src/app.js");
   app = createApp();

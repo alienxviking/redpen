@@ -82,6 +82,16 @@ export async function gradeAnswer(input: GradeInput): Promise<GradingRecord> {
   const extraFlags: ReviewFlag[] = [];
   const extraWarnings: string[] = [];
 
+  // Marks derived from a transcription are only as good as the transcription. Say so on
+  // the result rather than letting OCR output pass as the student's own words.
+  if (answerDoc.source === "vision") {
+    extraFlags.push({
+      code: "ocr_extraction",
+      message:
+        "This paper had no text layer, so the writing was transcribed from the page image before marking. Quotes and mark placements follow that transcription and should be checked against the original script.",
+    });
+  }
+
   // 1. Blank or near-blank: never send this to a model, and never call it a zero
   //    without saying so.
   if (answerDoc.isBlank || answerDoc.charCount < config.blankThreshold) {
