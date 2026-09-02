@@ -377,4 +377,9 @@ label > select, label > textarea { margin-top: 3px; color: var(--ink); }
 .points-group.incorrect .points-label { color: var(--danger); }
 .points-group ul { margin-top: 2px; }
 .points-group li { color: #46525f; padding-left: 10px; position: relative; }
-.points-group li::before { content: "2"; position: absolute; left: 0; color: var(--muted); }
+.points-group li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--muted);
+}
