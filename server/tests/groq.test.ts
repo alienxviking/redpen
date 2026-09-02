@@ -63,6 +63,8 @@ describe("Groq grader", () => {
     const spec = await rubric();
     const grade = buildModelGrade(spec, (_id, max) => max);
 
+    // The model is passed explicitly: a test must not depend on whatever GROQ_MODEL
+    // happens to be set to in the developer's own .env file.
     const spy = stubFetch((_url, init) => {
       const body = JSON.parse(String(init.body));
       expect(body.model).toBe("openai/gpt-oss-120b");
@@ -74,7 +76,9 @@ describe("Groq grader", () => {
       return chat(JSON.stringify(grade));
     });
 
-    const response = await new GroqGrader("test-key").grade(await request());
+    const response = await new GroqGrader("test-key", "openai/gpt-oss-120b").grade(
+      await request(),
+    );
 
     const [url, init] = spy.mock.calls[0]!;
     expect(String(url)).toBe("https://api.groq.com/openai/v1/chat/completions");
@@ -183,5 +187,17 @@ describe("Groq is honest about not seeing the diagrams", () => {
     expect(prompt).toMatch(/lower the confidence/i);
     expect(prompt).toMatch(/human review/i);
     expect(prompt).not.toMatch(/attached above as a PDF/i);
+  });
+});
+
+describe("json_object compatibility", () => {
+  it("mentions JSON in the messages, which OpenAI-compatible servers require", async () => {
+    // Groq returns 400 for response_format json_object unless the word appears.
+    const spy = stubFetch(() => chat("{}"));
+    await new GroqGrader("k").grade(await request());
+
+    const body = JSON.parse(String((spy.mock.calls[0]![1] as RequestInit).body));
+    const messages = body.messages.map((m: { content: string }) => m.content).join("\n");
+    expect(messages.toLowerCase()).toContain("json");
   });
 });

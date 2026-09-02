@@ -29,7 +29,7 @@ To grade for real, `cp .env.example .env` and set **one** of:
 | Key | Cost | Sees diagrams? | Notes |
 |---|---|---|---|
 | `ANTHROPIC_API_KEY` | paid | yes | Best quality. `claude-opus-5` by default. |
-| `GEMINI_API_KEY` | **free** | **yes** | <https://aistudio.google.com/apikey>. `gemini-2.5-flash`. |
+| `GEMINI_API_KEY` | **free** | **yes** | <https://aistudio.google.com/apikey>. `gemini-flash-latest`. |
 | `GROQ_API_KEY` | **free** | no | <https://console.groq.com/keys>. Much faster, generous limits. |
 
 `GRADER_PROVIDER=auto` (the default) prefers Claude, then Gemini, then Groq, then the
@@ -66,7 +66,7 @@ adapter at OpenRouter, Together, vLLM or LM Studio with no code change.
 | `GROQ_API_KEY` | *(unset)* | Enables the Groq grader (free tier, text-only). |
 | `GRADER_PROVIDER` | `auto` | `auto` \| `anthropic` \| `gemini` \| `groq` \| `mock`. |
 | `GRADER_MODEL` | `claude-opus-5` | Claude model id. |
-| `GEMINI_MODEL` | `gemini-2.5-flash` | Gemini model id. |
+| `GEMINI_MODEL` | `gemini-flash-latest` | Gemini model id. |
 | `GROQ_MODEL` | `openai/gpt-oss-120b` | Groq model id. |
 | `GROQ_BASE_URL` | Groq | Any OpenAI-compatible endpoint. |
 | `PORT` | `5174` | API port. |

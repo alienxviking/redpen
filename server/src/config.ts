@@ -1,4 +1,4 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -7,6 +7,19 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 /** Repository root, resolved from this file so it works under tsx and dist alike. */
 export const ROOT = path.resolve(here, "..", "..");
 export const SERVER_ROOT = path.resolve(here, "..");
+
+/**
+ * Load .env by absolute path rather than relying on the working directory.
+ *
+ * `npm run dev` starts the server through a workspace script, so the cwd is server/,
+ * not the repo root - a bare `dotenv/config` would look in the wrong place and
+ * silently find no keys, leaving the app on the offline grader while the user stares
+ * at a .env that looks correct. Both locations are accepted; the first wins.
+ */
+dotenv.config({
+  path: [path.join(SERVER_ROOT, ".env"), path.join(ROOT, ".env")],
+  quiet: true,
+});
 
 export const DATA_DIR = process.env.GRADESENSE_DATA_DIR
   ? path.resolve(process.env.GRADESENSE_DATA_DIR)
@@ -27,7 +40,7 @@ export const config = {
   apiKey: process.env.ANTHROPIC_API_KEY?.trim() || undefined,
   geminiApiKey:
     process.env.GEMINI_API_KEY?.trim() || process.env.GOOGLE_API_KEY?.trim() || undefined,
-  geminiModel: process.env.GEMINI_MODEL?.trim() || "gemini-2.5-flash",
+  geminiModel: process.env.GEMINI_MODEL?.trim() || "gemini-flash-latest",
   groqApiKey: process.env.GROQ_API_KEY?.trim() || undefined,
   groqModel: process.env.GROQ_MODEL?.trim() || "openai/gpt-oss-120b",
   /** Groq speaks the OpenAI wire format, so this also reaches OpenRouter, vLLM, etc. */

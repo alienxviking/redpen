@@ -9,3 +9,4 @@ server/data/exports/
 .DS_Store
 *.tsbuildinfo
 .vite/
+submission/

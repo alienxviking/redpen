@@ -34,6 +34,10 @@ export function buildSystemPrompt(): string {
     "- `confidence` is your genuine 0-1 confidence in the marks for that question. Lower it when the handwriting or extraction is unclear, when a diagram is hard to read, or when the answer is ambiguous.",
     "- Set `needsHumanReview` to true whenever a teacher really should check your marking, and say why in `reviewReason`.",
     "- If you cannot mark something, say so in the feedback and lower the confidence. Do not invent evidence and do not guess a score to appear decisive.",
+    "",
+    // Required wording, not decoration: an OpenAI-compatible endpoint rejects a
+    // request with response_format json_object unless the messages mention JSON.
+    "Output format: reply with a single JSON object matching the required schema. Return JSON only, with no commentary before or after it.",
   ].join("\n");
 }
 
