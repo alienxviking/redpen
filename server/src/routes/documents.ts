@@ -3,6 +3,7 @@ import multer from "multer";
 import { config } from "../config.js";
 import { loadRubric } from "../domain/rubric.js";
 import { extractPdf } from "../services/pdf/extractText.js";
+import { assessTextLayer } from "../services/pdf/textQuality.js";
 import { visionExtract } from "../services/pdf/visionExtract.js";
 import {
   getDocument,
@@ -54,14 +55,32 @@ documentsRouter.post("/", upload.single("file"), async (req, res, next) => {
     }
 
     /*
-     * No text layer means a scan or a handwritten script. Rather than refuse it, read
-     * the page image: the vision extractor returns the same positioned-token structure,
-     * so the rest of the pipeline neither changes nor needs to know. pdf.js still gives
-     * us real page geometry here, which is what keeps the transcribed boxes honest.
+     * A scan or a handwritten script needs reading from the page image rather than the
+     * text layer. Two cases qualify, and the second is the one that bites: a page with
+     * no text at all, and a page whose text layer is present but untrustworthy - phone
+     * scanner apps embed their own OCR, so a handwritten script arrives already
+     * "transcribed" into garbage that would otherwise be marked as if the student wrote
+     * it. `forceVision` lets a user insist regardless.
+     *
+     * The vision extractor returns the same positioned-token structure as the text-layer
+     * path, so nothing downstream changes. pdf.js still reports real page geometry here,
+     * which is what keeps the transcribed boxes honest.
      */
+    const quality = assessTextLayer(extraction.text);
+    const forceVision = String(req.body?.forceVision ?? "") === "true";
     let visionProblem: string | undefined;
     let transcribed = false;
+    let transcribeReason: string | undefined;
+
     if (extraction.isBlank) {
+      transcribeReason = "the page has no text layer";
+    } else if (forceVision) {
+      transcribeReason = "transcription was requested explicitly";
+    } else if (quality.unreliable) {
+      transcribeReason = `the embedded text layer looks unreliable (${quality.reasons.join("; ")})`;
+    }
+
+    if (transcribeReason) {
       const outcome = await visionExtract(
         file.buffer,
         extraction.pages.map((p) => ({ width: p.width, height: p.height })),
@@ -86,11 +105,14 @@ documentsRouter.post("/", upload.single("file"), async (req, res, next) => {
     res.status(201).json({
       document: doc,
       transcribed,
+      textLayerScore: quality.score,
       warning: transcribed
-        ? `This paper had no text layer, so ${extraction.tokens.length} lines were transcribed from the page image. Marks will be based on that transcription and flagged for review.`
+        ? `Read from the page image because ${transcribeReason}. ${extraction.tokens.length} lines were transcribed; marks will be based on that transcription and flagged for review.`
         : doc.isBlank
           ? `No text could be extracted from this PDF.${visionProblem ? ` ${visionProblem}` : ""} It will need OCR or manual marking.`
-          : undefined,
+          : transcribeReason
+            ? `This paper's text layer looks unreliable and it could not be transcribed either.${visionProblem ? ` ${visionProblem}` : ""} Marks would be based on poor text - check the paper by hand.`
+            : undefined,
     });
   } catch (error) {
     next(error);

@@ -1,3 +1,4 @@
+import { PDFDocument } from "pdf-lib";
 import { config } from "../../config.js";
 import type {
   ExtractedDocument,
@@ -53,21 +54,22 @@ export interface VisionTranscriber {
 
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta";
 
-const PROMPT = `You are transcribing a scanned or handwritten exam answer paper so that it can be marked.
+const PROMPT = `You are transcribing ONE page of a scanned, handwritten exam answer paper so that a teacher can mark it.
 
-For EVERY page, read every line of the student's writing in order, top to bottom.
+Read every line of the student's writing on this page, in order, top to bottom.
 
 Return JSON only, in exactly this shape:
 {"pages":[{"page":1,"lines":[{"text":"<one line exactly as written>","box_2d":[ymin,xmin,ymax,xmax]}]}]}
 
 Rules that matter:
-- Transcribe what is actually written, including spelling mistakes. Do NOT correct spelling, grammar or facts. A misspelling is evidence a marker needs to see.
-- One entry per visual line of writing. Keep the reading order.
-- box_2d is that line's bounding box as [ymin, xmin, ymax, xmax], each normalised to 0-1000 relative to the page, with y measured downwards from the top of the page. Be precise: these boxes are drawn back onto the page.
-- Include headings and question numbers as their own lines.
-- If the page contains a diagram or a graph, do not try to transcribe its shape. Instead emit one line per visible text label, positioned on that label, so the labels can still be marked.
-- If a line is genuinely illegible, transcribe your best reading of it and keep the box. Do not invent content that is not on the page.
-- Ignore printed page furniture such as pre-printed ruling or margin lines.`;
+- TRANSCRIBE, DO NOT CORRECT. Copy each line exactly as it is written on the page, letter for letter. If the student wrote "circut", write "circut". If they wrote "amether", write "amether". If they wrote "studnets", write "studnets". Never fix spelling, grammar, punctuation or facts. The mistakes are the single most important thing on this page: a marker has to see them, and silently correcting them changes the student's mark.
+- Do not paraphrase, summarise, tidy or shorten. Every line of writing on the page must appear.
+- One entry per visual line of writing, in reading order.
+- box_2d is that line's bounding box as [ymin, xmin, ymax, xmax], each normalised to 0-1000 relative to this page, y measured downwards from the top. Be precise: these boxes are drawn back onto the page.
+- Include the question heading as its own line.
+- For a diagram or graph, do not describe the drawing. Emit one line per visible text label, positioned on that label, so the labels can be marked. Copy label spellings exactly too.
+- If a word is unclear, give your best reading and keep the box. Do not invent content that is not on the page.
+- Ignore pre-printed ruling and margin lines.`;
 
 /** Transcribes with Gemini, which accepts a PDF or an image directly. */
 export class GeminiTranscriber implements VisionTranscriber {
@@ -86,13 +88,35 @@ export class GeminiTranscriber implements VisionTranscriber {
   }
 
   /**
+   * Transcribe page by page.
+   *
+   * Asking for a whole document in one reply does not work: the model transcribes the
+   * first page and stops, so later questions silently arrive empty and score zero. One
+   * request per page also keeps each reply well inside the output limit and makes the
+   * page number unambiguous.
+   */
+  async transcribe(base64: string, mimeType: string): Promise<VisionPage[]> {
+    const pageBuffers =
+      mimeType === "application/pdf" ? await splitPdfPages(base64) : [base64];
+
+    const pages: VisionPage[] = [];
+    for (const [index, pageBase64] of pageBuffers.entries()) {
+      const result = await this.transcribeOne(pageBase64, mimeType);
+      // Whatever page number the model reports, this is the page we sent it.
+      const lines = result.flatMap((p) => p.lines);
+      if (lines.length > 0) pages.push({ page: index + 1, lines });
+    }
+    return pages;
+  }
+
+  /**
    * Try each model in turn, retrying transient failures within each.
    *
    * The free tier's 503s are per-model, not per-account: while one model is saturated
    * another usually answers immediately. Retrying one model harder does not help, so
    * this walks a short list instead.
    */
-  async transcribe(base64: string, mimeType: string): Promise<VisionPage[]> {
+  private async transcribeOne(base64: string, mimeType: string): Promise<VisionPage[]> {
     const models = [...new Set([this.model, ...this.fallbacks])];
     let lastError: unknown;
 
@@ -181,6 +205,30 @@ export class GeminiTranscriber implements VisionTranscriber {
 
     const raw = (candidate?.content?.parts ?? []).map((p) => p.text ?? "").join("");
     return parseVisionPages(raw);
+  }
+}
+
+/**
+ * Split a PDF into one base64 document per page, so each can be transcribed alone.
+ * A failure here is not fatal: the caller then sends the whole document as one request,
+ * which is what it did before.
+ */
+async function splitPdfPages(base64: string): Promise<string[]> {
+  try {
+    const source = await PDFDocument.load(Buffer.from(base64, "base64"));
+    const count = source.getPageCount();
+    if (count <= 1) return [base64];
+
+    const pages: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const single = await PDFDocument.create();
+      const [copied] = await single.copyPages(source, [i]);
+      single.addPage(copied!);
+      pages.push(Buffer.from(await single.save()).toString("base64"));
+    }
+    return pages;
+  } catch {
+    return [base64];
   }
 }
 

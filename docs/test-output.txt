@@ -57,6 +57,8 @@
  [32m✓[39m tests/vision.test.ts[2m > [22ma transcribed paper marks like any other[2m > [22manchors quotes onto the transcribed lines
  [32m✓[39m tests/vision.test.ts[2m > [22ma transcribed paper marks like any other[2m > [22mgrades it and flags that the marks came from a transcription
  [32m✓[39m tests/vision.test.ts[2m > [22ma transcribed paper marks like any other[2m > [22mdoes not flag a paper that had a real text layer
+ [32m✓[39m tests/api.test.ts[2m > [22mhealth and rubric[2m > [22mreports which grader is in use
+ [32m✓[39m tests/api.test.ts[2m > [22mhealth and rubric[2m > [22mserves the rubric the marks are computed against
  [32m✓[39m tests/validation.test.ts[2m > [22mparsing model output[2m > [22maccepts a well-formed object that the SDK already parsed
  [32m✓[39m tests/validation.test.ts[2m > [22mparsing model output[2m > [22maccepts bare JSON text
  [32m✓[39m tests/validation.test.ts[2m > [22mparsing model output[2m > [22maccepts JSON wrapped in a markdown fence
@@ -64,16 +66,14 @@
  [32m✓[39m tests/validation.test.ts[2m > [22mparsing model output[2m > [22mreports a problem for output that is not JSON at all
  [32m✓[39m tests/validation.test.ts[2m > [22mparsing model output[2m > [22mreports a problem for JSON of the wrong shape
  [32m✓[39m tests/validation.test.ts[2m > [22mparsing model output[2m > [22mreports a problem for a truncated response
- [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mrecomputes totals from the rubric points rather than trusting the model[33m 380[2mms[22m[39m
+ [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mrecomputes totals from the rubric points rather than trusting the model[33m 431[2mms[22m[39m
  [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mclamps marks awarded above a rubric point's maximum
  [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mfloors negative marks at zero
  [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mfills in rubric points the model skipped and flags the gap
  [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mdiscards marks for rubric ids that do not exist
  [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mlowers confidence when evidence cannot be found in the paper
  [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mflags marks awarded with no supporting quote
- [32m✓[39m tests/api.test.ts[2m > [22mhealth and rubric[2m > [22mreports which grader is in use
- [32m✓[39m tests/api.test.ts[2m > [22mhealth and rubric[2m > [22mserves the rubric the marks are computed against
- [32m✓[39m tests/extraction.test.ts[2m > [22mPDF text extraction[2m > [22mextracts text with a bounding box for every run[33m 388[2mms[22m[39m
+ [32m✓[39m tests/extraction.test.ts[2m > [22mPDF text extraction[2m > [22mextracts text with a bounding box for every run[33m 428[2mms[22m[39m
  [32m✓[39m tests/extraction.test.ts[2m > [22mPDF text extraction[2m > [22mreports a paper with no text as blank rather than as an empty answer
  [32m✓[39m tests/extraction.test.ts[2m > [22mPDF text extraction[2m > [22mrejects a file that is not a PDF
  [32m✓[39m tests/extraction.test.ts[2m > [22mquote anchoring[2m > [22mlocates an exact quote and returns rectangles on the right page
@@ -81,11 +81,12 @@
  [32m✓[39m tests/extraction.test.ts[2m > [22mquote anchoring[2m > [22mtolerates a quote the model silently re-spelled
  [32m✓[39m tests/extraction.test.ts[2m > [22mquote anchoring[2m > [22mreports failure instead of guessing when the quote is not in the paper
  [32m✓[39m tests/extraction.test.ts[2m > [22mquote anchoring[2m > [22mreturns nothing for an empty quote rather than anchoring at position zero
- [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22ma fully correct answer scores full marks[33m 377[2mms[22m[39m
+ [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22ma fully correct answer scores full marks[33m 382[2mms[22m[39m
  [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22ma partially correct answer scores the planted 6 of 15
  [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22man incorrect answer scores near zero and every error is evidenced
  [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22ma blank answer scores zero, is flagged, and never reaches the model
  [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22mOCR-style spelling errors cost no marks but are surfaced as annotations
+ [32m✓[39m tests/export.test.ts[2m > [22mannotated PDF export[2m > [22mdraws every located annotation inside the bounds of its page[33m 419[2mms[22m[39m
  [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22mmalformed model output is repaired on a second attempt
  [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22moutput that stays malformed falls back to the offline grader
  [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22man API failure degrades to the offline grader and says so
@@ -93,9 +94,8 @@
  [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22mmarks the paper on reasoning, not on agreeing with the model answer
  [32m✓[39m tests/grading.test.ts[2m > [22minvariants[2m > [22mrejects a result whose total does not match its parts
  [32m✓[39m tests/grading.test.ts[2m > [22minvariants[2m > [22mrejects a result that awards more than the paper is worth
- [32m✓[39m tests/api.test.ts[2m > [22muploads[2m > [22maccepts a PDF and extracts its text[33m 321[2mms[22m[39m
- [32m✓[39m tests/export.test.ts[2m > [22mannotated PDF export[2m > [22mdraws every located annotation inside the bounds of its page[33m 383[2mms[22m[39m
  [32m✓[39m tests/export.test.ts[2m > [22mannotated PDF export[2m > [22mkeeps the student's pages and appends a summary
+ [32m✓[39m tests/api.test.ts[2m > [22muploads[2m > [22maccepts a PDF and extracts its text[33m 338[2mms[22m[39m
  [32m✓[39m tests/export.test.ts[2m > [22mannotated PDF export[2m > [22mwrites the marks, the evidence and the corrections into the summary
  [32m✓[39m tests/export.test.ts[2m > [22mannotated PDF export[2m > [22mcan export without the summary sheet
  [32m✓[39m tests/export.test.ts[2m > [22mannotated PDF export[2m > [22mnever modifies the bytes it was given
@@ -103,7 +103,7 @@
 [90mstderr[2m | tests/api.test.ts[2m > [22m[2muploads[2m > [22m[2mwarns rather than fails when a PDF has no extractable text
 [22m[39m[gradesense] could not read a transcription out of 33 chars: {"pages":[{"page":1,"lines":[]}]}
 
- [32m✓[39m tests/api.test.ts[2m > [22muploads[2m > [22mwarns rather than fails when a PDF has no extractable text[33m 1241[2mms[22m[39m
+ [32m✓[39m tests/api.test.ts[2m > [22muploads[2m > [22mwarns rather than fails when a PDF has no extractable text[33m 1378[2mms[22m[39m
  [32m✓[39m tests/api.test.ts[2m > [22muploads[2m > [22mrejects a file that is not a PDF
  [32m✓[39m tests/api.test.ts[2m > [22muploads[2m > [22mrejects a request with no file
  [32m✓[39m tests/api.test.ts[2m > [22muploads[2m > [22mrejects an unknown document kind
@@ -123,6 +123,6 @@
 
 [2m Test Files [22m [1m[32m8 passed[39m[22m[90m (8)[39m
 [2m      Tests [22m [1m[32m102 passed[39m[22m[90m (102)[39m
-[2m   Start at [22m 23:13:39
-[2m   Duration [22m 2.84s[2m (transform 579ms, setup 0ms, collect 2.28s, tests 4.33s, environment 1ms, prepare 1.10s)[22m
+[2m   Start at [22m 09:25:48
+[2m   Duration [22m 3.15s[2m (transform 755ms, setup 0ms, collect 2.78s, tests 4.87s, environment 2ms, prepare 1.23s)[22m
 
