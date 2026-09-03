@@ -71,6 +71,7 @@ documentsRouter.post("/", upload.single("file"), async (req, res, next) => {
     let visionProblem: string | undefined;
     let transcribed = false;
     let transcribeReason: string | undefined;
+    let unreadablePages: number[] = [];
 
     if (extraction.isBlank) {
       transcribeReason = "the page has no text layer";
@@ -86,6 +87,7 @@ documentsRouter.post("/", upload.single("file"), async (req, res, next) => {
         extraction.pages.map((p) => ({ width: p.width, height: p.height })),
         file.mimetype || "application/pdf",
       );
+      unreadablePages = outcome.unreadablePages ?? [];
       if (outcome.document) {
         extraction = outcome.document;
         transcribed = true;
@@ -106,8 +108,12 @@ documentsRouter.post("/", upload.single("file"), async (req, res, next) => {
       document: doc,
       transcribed,
       textLayerScore: quality.score,
+      unreadablePages,
       warning: transcribed
-        ? `Read from the page image because ${transcribeReason}. ${extraction.tokens.length} lines were transcribed; marks will be based on that transcription and flagged for review.`
+        ? `Read from the page image because ${transcribeReason}. ${extraction.tokens.length} lines were transcribed; marks will be based on that transcription and flagged for review.` +
+          (unreadablePages.length
+            ? ` Page ${unreadablePages.join(", ")} could not be read at all - anything answered there will score zero, so check it by hand.`
+            : "")
         : doc.isBlank
           ? `No text could be extracted from this PDF.${visionProblem ? ` ${visionProblem}` : ""} It will need OCR or manual marking.`
           : transcribeReason

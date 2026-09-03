@@ -87,6 +87,9 @@ export class GeminiTranscriber implements VisionTranscriber {
     this.usedModel = model;
   }
 
+  /** Pages that produced no readable lines, 1-indexed. Never silently discarded. */
+  unreadablePages: number[] = [];
+
   /**
    * Transcribe page by page.
    *
@@ -100,11 +103,25 @@ export class GeminiTranscriber implements VisionTranscriber {
       mimeType === "application/pdf" ? await splitPdfPages(base64) : [base64];
 
     const pages: VisionPage[] = [];
+    this.unreadablePages = [];
+
     for (const [index, pageBase64] of pageBuffers.entries()) {
-      const result = await this.transcribeOne(pageBase64, mimeType);
-      // Whatever page number the model reports, this is the page we sent it.
-      const lines = result.flatMap((p) => p.lines);
-      if (lines.length > 0) pages.push({ page: index + 1, lines });
+      let lines = (await this.transcribeOne(pageBase64, mimeType)).flatMap((p) => p.lines);
+
+      // A page that comes back empty is usually a one-off unparseable reply rather than
+      // a genuinely blank page, and the cost of being wrong is a whole question scoring
+      // zero for reasons that have nothing to do with the student. So ask again.
+      if (lines.length === 0) {
+        console.warn(`[gradesense] page ${index + 1} returned no lines; asking again`);
+        lines = (await this.transcribeOne(pageBase64, mimeType)).flatMap((p) => p.lines);
+      }
+
+      if (lines.length > 0) {
+        // Whatever page number the model reports, this is the page we sent it.
+        pages.push({ page: index + 1, lines });
+      } else {
+        this.unreadablePages.push(index + 1);
+      }
     }
     return pages;
   }
@@ -456,6 +473,11 @@ export interface VisionExtractOutcome {
   /** Why it did not work, for the upload response and the review flag. */
   problem?: string;
   model?: string;
+  /**
+   * Pages that could not be read at all, 1-indexed. A dropped page means a whole
+   * question silently scores zero, so this is reported rather than swallowed.
+   */
+  unreadablePages?: number[];
 }
 
 /**
@@ -494,7 +516,8 @@ export async function visionExtract(
       };
     }
     const used = (transcriber as { usedModel?: string }).usedModel ?? transcriber.model;
-    return { document, model: used };
+    const unreadablePages = (transcriber as { unreadablePages?: number[] }).unreadablePages ?? [];
+    return { document, model: used, unreadablePages };
   } catch (error) {
     return {
       document: null,
