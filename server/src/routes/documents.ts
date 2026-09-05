@@ -3,6 +3,7 @@ import multer from "multer";
 import { config } from "../config.js";
 import { loadRubric } from "../domain/rubric.js";
 import { extractPdf } from "../services/pdf/extractText.js";
+import { alignToTextLayer } from "../services/pdf/alignToTextLayer.js";
 import { assessTextLayer } from "../services/pdf/textQuality.js";
 import { visionExtract } from "../services/pdf/visionExtract.js";
 import {
@@ -89,7 +90,22 @@ documentsRouter.post("/", upload.single("file"), async (req, res, next) => {
       );
       unreadablePages = outcome.unreadablePages ?? [];
       if (outcome.document) {
-        extraction = outcome.document;
+        /*
+         * A vision model's normalised boxes can sit a consistent distance off the real
+         * page - about a line's worth on a phone scan. When the scanner left its own OCR
+         * layer we have independent geometry taken from the pixels: its text may be
+         * unusable, which is why we re-read the page, but its positions are not. So the
+         * words come from the transcription and the registration comes from the layer.
+         */
+        const aligned = alignToTextLayer(outcome.document, extraction);
+        for (const a of aligned.alignments) {
+          if (a.applied) {
+            console.log(
+              `[gradesense] page ${a.page + 1}: shifted transcription by ${a.shift}pt to match the text layer (${Math.round(a.agreement * 100)}% agreement)`,
+            );
+          }
+        }
+        extraction = aligned.document;
         transcribed = true;
       } else {
         visionProblem = outcome.problem;
