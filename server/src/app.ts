@@ -42,7 +42,7 @@ export function createApp() {
       const status = error.code === "LIMIT_FILE_SIZE" ? 413 : 400;
       return res.status(status).json({ error: `Upload rejected: ${error.message}` });
     }
-    console.error("[gradesense] unhandled error:", error);
+    console.error("[redpen] unhandled error:", error);
     res.status(500).json({
       error: "Internal server error",
       detail: error instanceof Error ? error.message : String(error),

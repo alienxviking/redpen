@@ -101,7 +101,7 @@ documentsRouter.post("/", upload.single("file"), async (req, res, next) => {
         for (const a of aligned.alignments) {
           if (a.applied) {
             console.log(
-              `[gradesense] page ${a.page + 1}: shifted transcription by ${a.shift}pt to match the text layer (${Math.round(a.agreement * 100)}% agreement)`,
+              `[redpen] page ${a.page + 1}: shifted transcription by ${a.shift}pt to match the text layer (${Math.round(a.agreement * 100)}% agreement)`,
             );
           }
         }

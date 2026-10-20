@@ -112,7 +112,7 @@ export class GeminiTranscriber implements VisionTranscriber {
       // a genuinely blank page, and the cost of being wrong is a whole question scoring
       // zero for reasons that have nothing to do with the student. So ask again.
       if (lines.length === 0) {
-        console.warn(`[gradesense] page ${index + 1} returned no lines; asking again`);
+        console.warn(`[redpen] page ${index + 1} returned no lines; asking again`);
         lines = (await this.transcribeOne(pageBase64, mimeType)).flatMap((p) => p.lines);
       }
 
@@ -144,18 +144,18 @@ export class GeminiTranscriber implements VisionTranscriber {
           baseDelayMs: 2000,
           onRetry: ({ delayMs, reason }) =>
             console.warn(
-              `[gradesense] ${model} transcription failed (${reason}); retrying in ${Math.round(delayMs / 100) / 10}s`,
+              `[redpen] ${model} transcription failed (${reason}); retrying in ${Math.round(delayMs / 100) / 10}s`,
             ),
         });
         this.usedModel = model;
         if (model !== this.model) {
-          console.warn(`[gradesense] transcribed with fallback model ${model}`);
+          console.warn(`[redpen] transcribed with fallback model ${model}`);
         }
         return pages;
       } catch (error) {
         lastError = error;
         console.warn(
-          `[gradesense] giving up on ${model}: ${error instanceof Error ? error.message.slice(0, 120) : error}`,
+          `[redpen] giving up on ${model}: ${error instanceof Error ? error.message.slice(0, 120) : error}`,
         );
       }
     }
@@ -326,13 +326,13 @@ export function parseVisionPages(raw: string): VisionPage[] {
   if (salvaged.some((p) => p.lines.length > 0)) {
     const count = salvaged.reduce((n, p) => n + p.lines.length, 0);
     console.warn(
-      `[gradesense] transcription JSON was malformed or truncated; salvaged ${count} lines`,
+      `[redpen] transcription JSON was malformed or truncated; salvaged ${count} lines`,
     );
     return salvaged;
   }
 
   console.warn(
-    `[gradesense] could not read a transcription out of ${text.length} chars: ${text.slice(0, 180)}`,
+    `[redpen] could not read a transcription out of ${text.length} chars: ${text.slice(0, 180)}`,
   );
   return [];
 }

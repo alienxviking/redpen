@@ -18,8 +18,8 @@ let app: Express;
 let dataDir: string;
 
 beforeAll(async () => {
-  dataDir = await fs.mkdtemp(path.join(os.tmpdir(), "gradesense-test-"));
-  process.env.GRADESENSE_DATA_DIR = dataDir;
+  dataDir = await fs.mkdtemp(path.join(os.tmpdir(), "redpen-test-"));
+  process.env.REDPEN_DATA_DIR = dataDir;
   process.env.GRADER_PROVIDER = "mock";
   delete process.env.ANTHROPIC_API_KEY;
   // Also unset the vision key: a blank upload would otherwise transcribe over the

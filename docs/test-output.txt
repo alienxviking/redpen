@@ -1,132 +1,136 @@
 
+> redpen@1.0.0 test
+> npm run test -w server
+
+
 > server@1.0.0 test
 > vitest run
 
 
-[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/sroy1/Documents/GradeSense/server[39m
+ RUN  v2.1.9 C:/Users/sroy1/Documents/RedPen/server
 
- [32m✓[39m tests/gemini.test.ts[2m > [22mGemini grader[2m > [22msends the answer PDF and the prompt, and returns the model's text
- [32m✓[39m tests/gemini.test.ts[2m > [22mGemini grader[2m > [22mjoins multi-part responses
- [32m✓[39m tests/gemini.test.ts[2m > [22mGemini grader[2m > [22mmaps a rejected key to an auth failure
- [32m✓[39m tests/gemini.test.ts[2m > [22mGemini grader[2m > [22mmaps the free-tier quota to a rate limit
- [32m✓[39m tests/gemini.test.ts[2m > [22mGemini grader[2m > [22mmaps a 5xx to a server failure so the pipeline degrades
- [32m✓[39m tests/gemini.test.ts[2m > [22mGemini grader[2m > [22mnames the available models when the configured one does not exist
- [32m✓[39m tests/gemini.test.ts[2m > [22mGemini grader[2m > [22mtreats a safety block as a refusal rather than a grade
- [32m✓[39m tests/gemini.test.ts[2m > [22mGemini grader[2m > [22mmaps a network failure to a network error
- [32m✓[39m tests/gemini.test.ts[2m > [22mGemini grader[2m > [22mmaps an aborted request to a timeout
- [32m✓[39m tests/gemini.test.ts[2m > [22mGemini grader[2m > [22mreturns truncated output rather than throwing, so repair can handle it
- [32m✓[39m tests/groq.test.ts[2m > [22mGroq grader[2m > [22mposts an OpenAI-shaped chat completion and returns the content
- [32m✓[39m tests/groq.test.ts[2m > [22mGroq grader[2m > [22mcan be pointed at any OpenAI-compatible endpoint
- [32m✓[39m tests/groq.test.ts[2m > [22mGroq grader[2m > [22mmaps a rejected key to an auth failure
- [32m✓[39m tests/groq.test.ts[2m > [22mGroq grader[2m > [22mmaps the free-tier quota to a rate limit
- [32m✓[39m tests/groq.test.ts[2m > [22mGroq grader[2m > [22mmaps a 5xx to a server failure so the pipeline degrades
- [32m✓[39m tests/groq.test.ts[2m > [22mGroq grader[2m > [22mnames the available models when a model id has been retired
- [32m✓[39m tests/groq.test.ts[2m > [22mGroq grader[2m > [22mmaps a content filter to a refusal
- [32m✓[39m tests/groq.test.ts[2m > [22mGroq grader[2m > [22mmaps network and timeout failures
- [32m✓[39m tests/groq.test.ts[2m > [22mGroq grader[2m > [22mreturns truncated output rather than throwing, so repair can handle it
- [32m✓[39m tests/groq.test.ts[2m > [22mGroq is honest about not seeing the diagrams[2m > [22mnever sends the PDF, because the endpoint cannot read one
- [32m✓[39m tests/groq.test.ts[2m > [22mGroq is honest about not seeing the diagrams[2m > [22mtells the model it cannot see diagrams and must flag them for review
- [32m✓[39m tests/groq.test.ts[2m > [22mjson_object compatibility[2m > [22mmentions JSON in the messages, which OpenAI-compatible servers require
-[90mstderr[2m | tests/vision.test.ts[2m > [22m[2mreading the model's transcription[2m > [22m[2msalvages the lines that arrived when the reply was truncated
-[22m[39m[gradesense] transcription JSON was malformed or truncated; salvaged 2 lines
+ ✓ tests/gemini.test.ts > Gemini grader > sends the answer PDF and the prompt, and returns the model's text
+ ✓ tests/gemini.test.ts > Gemini grader > joins multi-part responses
+ ✓ tests/gemini.test.ts > Gemini grader > maps a rejected key to an auth failure
+ ✓ tests/gemini.test.ts > Gemini grader > maps the free-tier quota to a rate limit
+ ✓ tests/gemini.test.ts > Gemini grader > maps a 5xx to a server failure so the pipeline degrades
+ ✓ tests/gemini.test.ts > Gemini grader > names the available models when the configured one does not exist
+ ✓ tests/gemini.test.ts > Gemini grader > treats a safety block as a refusal rather than a grade
+ ✓ tests/gemini.test.ts > Gemini grader > maps a network failure to a network error
+ ✓ tests/gemini.test.ts > Gemini grader > maps an aborted request to a timeout
+ ✓ tests/gemini.test.ts > Gemini grader > returns truncated output rather than throwing, so repair can handle it
+ ✓ tests/groq.test.ts > Groq grader > posts an OpenAI-shaped chat completion and returns the content
+ ✓ tests/groq.test.ts > Groq grader > can be pointed at any OpenAI-compatible endpoint
+ ✓ tests/groq.test.ts > Groq grader > maps a rejected key to an auth failure
+ ✓ tests/groq.test.ts > Groq grader > maps the free-tier quota to a rate limit
+ ✓ tests/groq.test.ts > Groq grader > maps a 5xx to a server failure so the pipeline degrades
+ ✓ tests/groq.test.ts > Groq grader > names the available models when a model id has been retired
+ ✓ tests/groq.test.ts > Groq grader > maps a content filter to a refusal
+ ✓ tests/groq.test.ts > Groq grader > maps network and timeout failures
+ ✓ tests/groq.test.ts > Groq grader > returns truncated output rather than throwing, so repair can handle it
+ ✓ tests/groq.test.ts > Groq is honest about not seeing the diagrams > never sends the PDF, because the endpoint cannot read one
+ ✓ tests/groq.test.ts > Groq is honest about not seeing the diagrams > tells the model it cannot see diagrams and must flag them for review
+ ✓ tests/groq.test.ts > json_object compatibility > mentions JSON in the messages, which OpenAI-compatible servers require
+stderr | tests/vision.test.ts > reading the model's transcription > salvages the lines that arrived when the reply was truncated
+[redpen] transcription JSON was malformed or truncated; salvaged 2 lines
 
-[90mstderr[2m | tests/vision.test.ts[2m > [22m[2mreading the model's transcription[2m > [22m[2mattributes salvaged lines to the right page
-[22m[39m[gradesense] transcription JSON was malformed or truncated; salvaged 2 lines
+stderr | tests/vision.test.ts > reading the model's transcription > attributes salvaged lines to the right page
+[redpen] transcription JSON was malformed or truncated; salvaged 2 lines
 
-[90mstderr[2m | tests/vision.test.ts[2m > [22m[2mreading the model's transcription[2m > [22m[2mreturns nothing for a reply with no transcription in it
-[22m[39m[gradesense] could not read a transcription out of 24 chars: I cannot read this page.
-[gradesense] could not read a transcription out of 12 chars: {"pages":[]}
+stderr | tests/vision.test.ts > reading the model's transcription > returns nothing for a reply with no transcription in it
+[redpen] could not read a transcription out of 24 chars: I cannot read this page.
+[redpen] could not read a transcription out of 12 chars: {"pages":[]}
 
- [32m✓[39m tests/vision.test.ts[2m > [22mreading the model's transcription[2m > [22maccepts the documented shape
- [32m✓[39m tests/vision.test.ts[2m > [22mreading the model's transcription[2m > [22munwraps a box that arrived nested
- [32m✓[39m tests/vision.test.ts[2m > [22mreading the model's transcription[2m > [22maccepts numbers sent as strings
- [32m✓[39m tests/vision.test.ts[2m > [22mreading the model's transcription[2m > [22mtreats a bare lines array as a single page
- [32m✓[39m tests/vision.test.ts[2m > [22mreading the model's transcription[2m > [22mreads JSON out of a fenced block or surrounding prose
- [32m✓[39m tests/vision.test.ts[2m > [22mreading the model's transcription[2m > [22msalvages the lines that arrived when the reply was truncated
- [32m✓[39m tests/vision.test.ts[2m > [22mreading the model's transcription[2m > [22mattributes salvaged lines to the right page
- [32m✓[39m tests/vision.test.ts[2m > [22mreading the model's transcription[2m > [22mreturns nothing for a reply with no transcription in it
- [32m✓[39m tests/vision.test.ts[2m > [22mconverting boxes into positioned tokens[2m > [22mflips the y axis and scales into PDF points
- [32m✓[39m tests/vision.test.ts[2m > [22mconverting boxes into positioned tokens[2m > [22mgives every token offsets that index back into the document text
- [32m✓[39m tests/vision.test.ts[2m > [22mconverting boxes into positioned tokens[2m > [22morders lines top to bottom regardless of the order they arrived in
- [32m✓[39m tests/vision.test.ts[2m > [22mconverting boxes into positioned tokens[2m > [22mkeeps boxes inside the page even when the model overshoots
- [32m✓[39m tests/vision.test.ts[2m > [22mconverting boxes into positioned tokens[2m > [22mplaces multi-page transcriptions on the right pages
- [32m✓[39m tests/vision.test.ts[2m > [22mconverting boxes into positioned tokens[2m > [22mreturns null rather than an empty document
- [32m✓[39m tests/vision.test.ts[2m > [22mthe extractor's failure posture[2m > [22mexplains itself when no vision model is configured
- [32m✓[39m tests/vision.test.ts[2m > [22mthe extractor's failure posture[2m > [22mreports a transcription failure instead of throwing
- [32m✓[39m tests/vision.test.ts[2m > [22mthe extractor's failure posture[2m > [22mreports an empty transcription instead of inventing text
- [32m✓[39m tests/vision.test.ts[2m > [22ma transcribed paper marks like any other[2m > [22manchors quotes onto the transcribed lines
- [32m✓[39m tests/vision.test.ts[2m > [22ma transcribed paper marks like any other[2m > [22mgrades it and flags that the marks came from a transcription
- [32m✓[39m tests/vision.test.ts[2m > [22ma transcribed paper marks like any other[2m > [22mdoes not flag a paper that had a real text layer
- [32m✓[39m tests/api.test.ts[2m > [22mhealth and rubric[2m > [22mreports which grader is in use
- [32m✓[39m tests/api.test.ts[2m > [22mhealth and rubric[2m > [22mserves the rubric the marks are computed against
- [32m✓[39m tests/validation.test.ts[2m > [22mparsing model output[2m > [22maccepts a well-formed object that the SDK already parsed
- [32m✓[39m tests/validation.test.ts[2m > [22mparsing model output[2m > [22maccepts bare JSON text
- [32m✓[39m tests/validation.test.ts[2m > [22mparsing model output[2m > [22maccepts JSON wrapped in a markdown fence
- [32m✓[39m tests/validation.test.ts[2m > [22mparsing model output[2m > [22maccepts JSON buried in prose with braces inside strings
- [32m✓[39m tests/validation.test.ts[2m > [22mparsing model output[2m > [22mreports a problem for output that is not JSON at all
- [32m✓[39m tests/validation.test.ts[2m > [22mparsing model output[2m > [22mreports a problem for JSON of the wrong shape
- [32m✓[39m tests/validation.test.ts[2m > [22mparsing model output[2m > [22mreports a problem for a truncated response
- [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mrecomputes totals from the rubric points rather than trusting the model[33m 503[2mms[22m[39m
- [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mclamps marks awarded above a rubric point's maximum
- [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mfloors negative marks at zero
- [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mfills in rubric points the model skipped and flags the gap
- [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mdiscards marks for rubric ids that do not exist
- [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mlowers confidence when evidence cannot be found in the paper
- [32m✓[39m tests/validation.test.ts[2m > [22mreconciling a grade against the rubric[2m > [22mflags marks awarded with no supporting quote
- [32m✓[39m tests/extraction.test.ts[2m > [22mPDF text extraction[2m > [22mextracts text with a bounding box for every run[33m 516[2mms[22m[39m
- [32m✓[39m tests/extraction.test.ts[2m > [22mPDF text extraction[2m > [22mreports a paper with no text as blank rather than as an empty answer
- [32m✓[39m tests/extraction.test.ts[2m > [22mPDF text extraction[2m > [22mrejects a file that is not a PDF
- [32m✓[39m tests/extraction.test.ts[2m > [22mquote anchoring[2m > [22mlocates an exact quote and returns rectangles on the right page
- [32m✓[39m tests/extraction.test.ts[2m > [22mquote anchoring[2m > [22mstill locates a quote whose line breaks were collapsed
- [32m✓[39m tests/extraction.test.ts[2m > [22mquote anchoring[2m > [22mtolerates a quote the model silently re-spelled
- [32m✓[39m tests/extraction.test.ts[2m > [22mquote anchoring[2m > [22mreports failure instead of guessing when the quote is not in the paper
- [32m✓[39m tests/extraction.test.ts[2m > [22mquote anchoring[2m > [22mreturns nothing for an empty quote rather than anchoring at position zero
- [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22ma fully correct answer scores full marks[33m 509[2mms[22m[39m
- [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22ma partially correct answer scores the planted 6 of 15
- [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22man incorrect answer scores near zero and every error is evidenced
- [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22ma blank answer scores zero, is flagged, and never reaches the model
- [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22mOCR-style spelling errors cost no marks but are surfaced as annotations
- [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22mmalformed model output is repaired on a second attempt
- [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22moutput that stays malformed falls back to the offline grader
- [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22man API failure degrades to the offline grader and says so
- [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22mmarks above the maximum are corrected rather than reported
- [32m✓[39m tests/grading.test.ts[2m > [22mgrading scenarios[2m > [22mmarks the paper on reasoning, not on agreeing with the model answer
- [32m✓[39m tests/grading.test.ts[2m > [22minvariants[2m > [22mrejects a result whose total does not match its parts
- [32m✓[39m tests/grading.test.ts[2m > [22minvariants[2m > [22mrejects a result that awards more than the paper is worth
- [32m✓[39m tests/export.test.ts[2m > [22mannotated PDF export[2m > [22mdraws every located annotation inside the bounds of its page[33m 553[2mms[22m[39m
- [32m✓[39m tests/export.test.ts[2m > [22mannotated PDF export[2m > [22mkeeps the student's pages and appends a summary
- [32m✓[39m tests/api.test.ts[2m > [22muploads[2m > [22maccepts a PDF and extracts its text[33m 470[2mms[22m[39m
- [32m✓[39m tests/export.test.ts[2m > [22mannotated PDF export[2m > [22mwrites the marks, the evidence and the corrections into the summary
- [32m✓[39m tests/export.test.ts[2m > [22mannotated PDF export[2m > [22mcan export without the summary sheet
- [32m✓[39m tests/export.test.ts[2m > [22mannotated PDF export[2m > [22mnever modifies the bytes it was given
- [32m✓[39m tests/export.test.ts[2m > [22mannotated PDF export[2m > [22mexports a paper that has no annotations at all
-[90mstderr[2m | tests/api.test.ts[2m > [22m[2muploads[2m > [22m[2mwarns rather than fails when a PDF has no extractable text
-[22m[39m[gradesense] could not read a transcription out of 33 chars: {"pages":[{"page":1,"lines":[]}]}
-[gradesense] page 1 returned no lines; asking again
+ ✓ tests/vision.test.ts > reading the model's transcription > accepts the documented shape
+ ✓ tests/vision.test.ts > reading the model's transcription > unwraps a box that arrived nested
+ ✓ tests/vision.test.ts > reading the model's transcription > accepts numbers sent as strings
+ ✓ tests/vision.test.ts > reading the model's transcription > treats a bare lines array as a single page
+ ✓ tests/vision.test.ts > reading the model's transcription > reads JSON out of a fenced block or surrounding prose
+ ✓ tests/vision.test.ts > reading the model's transcription > salvages the lines that arrived when the reply was truncated
+ ✓ tests/vision.test.ts > reading the model's transcription > attributes salvaged lines to the right page
+ ✓ tests/vision.test.ts > reading the model's transcription > returns nothing for a reply with no transcription in it
+ ✓ tests/vision.test.ts > converting boxes into positioned tokens > flips the y axis and scales into PDF points
+ ✓ tests/vision.test.ts > converting boxes into positioned tokens > gives every token offsets that index back into the document text
+ ✓ tests/vision.test.ts > converting boxes into positioned tokens > orders lines top to bottom regardless of the order they arrived in
+ ✓ tests/vision.test.ts > converting boxes into positioned tokens > keeps boxes inside the page even when the model overshoots
+ ✓ tests/vision.test.ts > converting boxes into positioned tokens > places multi-page transcriptions on the right pages
+ ✓ tests/vision.test.ts > converting boxes into positioned tokens > returns null rather than an empty document
+ ✓ tests/vision.test.ts > the extractor's failure posture > explains itself when no vision model is configured
+ ✓ tests/vision.test.ts > the extractor's failure posture > reports a transcription failure instead of throwing
+ ✓ tests/vision.test.ts > the extractor's failure posture > reports an empty transcription instead of inventing text
+ ✓ tests/vision.test.ts > a transcribed paper marks like any other > anchors quotes onto the transcribed lines
+ ✓ tests/vision.test.ts > a transcribed paper marks like any other > grades it and flags that the marks came from a transcription
+ ✓ tests/vision.test.ts > a transcribed paper marks like any other > does not flag a paper that had a real text layer
+ ✓ tests/validation.test.ts > parsing model output > accepts a well-formed object that the SDK already parsed
+ ✓ tests/validation.test.ts > parsing model output > accepts bare JSON text
+ ✓ tests/validation.test.ts > parsing model output > accepts JSON wrapped in a markdown fence
+ ✓ tests/validation.test.ts > parsing model output > accepts JSON buried in prose with braces inside strings
+ ✓ tests/validation.test.ts > parsing model output > reports a problem for output that is not JSON at all
+ ✓ tests/validation.test.ts > parsing model output > reports a problem for JSON of the wrong shape
+ ✓ tests/validation.test.ts > parsing model output > reports a problem for a truncated response
+ ✓ tests/validation.test.ts > reconciling a grade against the rubric > recomputes totals from the rubric points rather than trusting the model 418ms
+ ✓ tests/validation.test.ts > reconciling a grade against the rubric > clamps marks awarded above a rubric point's maximum
+ ✓ tests/validation.test.ts > reconciling a grade against the rubric > floors negative marks at zero
+ ✓ tests/validation.test.ts > reconciling a grade against the rubric > fills in rubric points the model skipped and flags the gap
+ ✓ tests/validation.test.ts > reconciling a grade against the rubric > discards marks for rubric ids that do not exist
+ ✓ tests/validation.test.ts > reconciling a grade against the rubric > lowers confidence when evidence cannot be found in the paper
+ ✓ tests/validation.test.ts > reconciling a grade against the rubric > flags marks awarded with no supporting quote
+ ✓ tests/extraction.test.ts > PDF text extraction > extracts text with a bounding box for every run 441ms
+ ✓ tests/extraction.test.ts > PDF text extraction > reports a paper with no text as blank rather than as an empty answer
+ ✓ tests/extraction.test.ts > PDF text extraction > rejects a file that is not a PDF
+ ✓ tests/extraction.test.ts > quote anchoring > locates an exact quote and returns rectangles on the right page
+ ✓ tests/extraction.test.ts > quote anchoring > still locates a quote whose line breaks were collapsed
+ ✓ tests/extraction.test.ts > quote anchoring > tolerates a quote the model silently re-spelled
+ ✓ tests/extraction.test.ts > quote anchoring > reports failure instead of guessing when the quote is not in the paper
+ ✓ tests/extraction.test.ts > quote anchoring > returns nothing for an empty quote rather than anchoring at position zero
+ ✓ tests/api.test.ts > health and rubric > reports which grader is in use
+ ✓ tests/api.test.ts > health and rubric > serves the rubric the marks are computed against
+ ✓ tests/grading.test.ts > grading scenarios > a fully correct answer scores full marks 406ms
+ ✓ tests/grading.test.ts > grading scenarios > a partially correct answer scores the planted 6 of 15
+ ✓ tests/grading.test.ts > grading scenarios > an incorrect answer scores near zero and every error is evidenced
+ ✓ tests/grading.test.ts > grading scenarios > a blank answer scores zero, is flagged, and never reaches the model
+ ✓ tests/grading.test.ts > grading scenarios > OCR-style spelling errors cost no marks but are surfaced as annotations
+ ✓ tests/grading.test.ts > grading scenarios > malformed model output is repaired on a second attempt
+ ✓ tests/grading.test.ts > grading scenarios > output that stays malformed falls back to the offline grader
+ ✓ tests/grading.test.ts > grading scenarios > an API failure degrades to the offline grader and says so
+ ✓ tests/export.test.ts > annotated PDF export > draws every located annotation inside the bounds of its page 448ms
+ ✓ tests/grading.test.ts > grading scenarios > marks above the maximum are corrected rather than reported
+ ✓ tests/grading.test.ts > grading scenarios > marks the paper on reasoning, not on agreeing with the model answer
+ ✓ tests/grading.test.ts > invariants > rejects a result whose total does not match its parts
+ ✓ tests/grading.test.ts > invariants > rejects a result that awards more than the paper is worth
+ ✓ tests/export.test.ts > annotated PDF export > keeps the student's pages and appends a summary
+ ✓ tests/export.test.ts > annotated PDF export > writes the marks, the evidence and the corrections into the summary
+ ✓ tests/export.test.ts > annotated PDF export > can export without the summary sheet
+ ✓ tests/export.test.ts > annotated PDF export > never modifies the bytes it was given
+ ✓ tests/export.test.ts > annotated PDF export > exports a paper that has no annotations at all
+ ✓ tests/api.test.ts > uploads > accepts a PDF and extracts its text 390ms
+stderr | tests/api.test.ts > uploads > warns rather than fails when a PDF has no extractable text
+[redpen] could not read a transcription out of 33 chars: {"pages":[{"page":1,"lines":[]}]}
+[redpen] page 1 returned no lines; asking again
 
-[90mstderr[2m | tests/api.test.ts[2m > [22m[2muploads[2m > [22m[2mwarns rather than fails when a PDF has no extractable text
-[22m[39m[gradesense] could not read a transcription out of 33 chars: {"pages":[{"page":1,"lines":[]}]}
+stderr | tests/api.test.ts > uploads > warns rather than fails when a PDF has no extractable text
+[redpen] could not read a transcription out of 33 chars: {"pages":[{"page":1,"lines":[]}]}
 
- [32m✓[39m tests/api.test.ts[2m > [22muploads[2m > [22mwarns rather than fails when a PDF has no extractable text[33m 3207[2mms[22m[39m
- [32m✓[39m tests/api.test.ts[2m > [22muploads[2m > [22mrejects a file that is not a PDF
- [32m✓[39m tests/api.test.ts[2m > [22muploads[2m > [22mrejects a request with no file
- [32m✓[39m tests/api.test.ts[2m > [22muploads[2m > [22mrejects an unknown document kind
- [32m✓[39m tests/api.test.ts[2m > [22mgrading, annotation editing and export[2m > [22mgrades an uploaded paper
- [32m✓[39m tests/api.test.ts[2m > [22mgrading, annotation editing and export[2m > [22mreturns 404 for a grading that does not exist
- [32m✓[39m tests/api.test.ts[2m > [22mgrading, annotation editing and export[2m > [22mreturns 404 when grading a document that does not exist
- [32m✓[39m tests/api.test.ts[2m > [22mgrading, annotation editing and export[2m > [22mrejects a grading request with no answer
- [32m✓[39m tests/api.test.ts[2m > [22mgrading, annotation editing and export[2m > [22mlists the grading in the history
- [32m✓[39m tests/api.test.ts[2m > [22mgrading, annotation editing and export[2m > [22medits an annotation's text without changing any marks
- [32m✓[39m tests/api.test.ts[2m > [22mgrading, annotation editing and export[2m > [22mmoves an annotation to new coordinates
- [32m✓[39m tests/api.test.ts[2m > [22mgrading, annotation editing and export[2m > [22mre-locates an annotation when its quote is retyped
- [32m✓[39m tests/api.test.ts[2m > [22mgrading, annotation editing and export[2m > [22madds a teacher's own annotation
- [32m✓[39m tests/api.test.ts[2m > [22mgrading, annotation editing and export[2m > [22mrejects an annotation with no rectangle to draw
- [32m✓[39m tests/api.test.ts[2m > [22mgrading, annotation editing and export[2m > [22mdeletes an annotation
- [32m✓[39m tests/api.test.ts[2m > [22mgrading, annotation editing and export[2m > [22mexports an annotated PDF without touching the original
- [32m✓[39m tests/api.test.ts[2m > [22mgrading, annotation editing and export[2m > [22mkeeps history readable after a restart
+ ✓ tests/api.test.ts > uploads > warns rather than fails when a PDF has no extractable text 16068ms
+ ✓ tests/api.test.ts > uploads > rejects a file that is not a PDF
+ ✓ tests/api.test.ts > uploads > rejects a request with no file
+ ✓ tests/api.test.ts > uploads > rejects an unknown document kind
+ ✓ tests/api.test.ts > grading, annotation editing and export > grades an uploaded paper
+ ✓ tests/api.test.ts > grading, annotation editing and export > returns 404 for a grading that does not exist
+ ✓ tests/api.test.ts > grading, annotation editing and export > returns 404 when grading a document that does not exist
+ ✓ tests/api.test.ts > grading, annotation editing and export > rejects a grading request with no answer
+ ✓ tests/api.test.ts > grading, annotation editing and export > lists the grading in the history
+ ✓ tests/api.test.ts > grading, annotation editing and export > edits an annotation's text without changing any marks
+ ✓ tests/api.test.ts > grading, annotation editing and export > moves an annotation to new coordinates
+ ✓ tests/api.test.ts > grading, annotation editing and export > re-locates an annotation when its quote is retyped
+ ✓ tests/api.test.ts > grading, annotation editing and export > adds a teacher's own annotation
+ ✓ tests/api.test.ts > grading, annotation editing and export > rejects an annotation with no rectangle to draw
+ ✓ tests/api.test.ts > grading, annotation editing and export > deletes an annotation
+ ✓ tests/api.test.ts > grading, annotation editing and export > exports an annotated PDF without touching the original
+ ✓ tests/api.test.ts > grading, annotation editing and export > keeps history readable after a restart
 
-[2m Test Files [22m [1m[32m8 passed[39m[22m[90m (8)[39m
-[2m      Tests [22m [1m[32m102 passed[39m[22m[90m (102)[39m
-[2m   Start at [22m 16:52:22
-[2m   Duration [22m 5.35s[2m (transform 865ms, setup 0ms, collect 3.10s, tests 7.47s, environment 2ms, prepare 1.38s)[22m
+ Test Files  8 passed (8)
+      Tests  102 passed (102)
+   Start at  00:12:57
+   Duration  18.10s (transform 802ms, setup 0ms, collect 3.06s, tests 19.75s, environment 3ms, prepare 1.36s)
 

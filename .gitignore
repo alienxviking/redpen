@@ -10,3 +10,7 @@ server/data/exports/
 *.tsbuildinfo
 .vite/
 submission/
+
+# supplied assessment materials - not mine to publish
+docs/assignment.pdf
+fixtures/provided/

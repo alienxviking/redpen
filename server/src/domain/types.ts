@@ -1,5 +1,5 @@
 /**
- * Core domain types for GradeSense.
+ * Core domain types for RedPen.
  *
  * Two things drive most of the design here:
  *   1. A grade must be reconstructible from evidence. Every mark deduction points at

@@ -1,4 +1,4 @@
-# GradeSense
+# RedPen
 
 A marking tool that reads a student's answer paper, marks it against a rubric, explains
 every mark with a quote from the student's own words, and draws the problems on the page
@@ -11,6 +11,12 @@ tool is unsure, it says so instead of pretending.
 ---
 
 ## Quick start
+
+> **Supplied materials are not in this repo.** RedPen was built as a 36-hour take-home for
+> an AI/ML product engineering internship. The question paper, model answer and rubric were
+> supplied by the company and aren't mine to publish, so `fixtures/provided/` is empty here.
+> The app and the test suite need `fixtures/provided/rubric.json`; everything else —
+> the student answer papers, the error key, the cases and the code — is my own.
 
 ```bash
 npm install
@@ -52,7 +58,7 @@ adapter at OpenRouter, Together, vLLM or LM Studio with no code change.
 
 | Command | What it does |
 |---|---|
-| `npm test` | Runs the 81-test suite (no network, no API key) |
+| `npm test` | Runs the 102-test suite (no network, no API key) |
 | `npm run seed` | Regenerates the answer papers in `fixtures/` |
 | `npm run example` | Writes `fixtures/example-annotated.pdf` — a worked annotated paper |
 | `npm run build` | Type-checks and builds both packages |
@@ -78,7 +84,7 @@ adapter at OpenRouter, Together, vLLM or LM Studio with no code change.
 
 ```
 fixtures/
-  provided/            the supplied question paper, model answer, and rubric.json
+  provided/            the supplied question paper, model answer, rubric.json (not published)
   student-answer.pdf   the authored student script (the assignment deliverable)
   error-key.md         every planted mistake, its correction and the mark it costs
   cases/               correct / incorrect / blank / OCR-damaged answer papers
@@ -86,7 +92,7 @@ fixtures/
 server/                Express + TypeScript API, grading pipeline, tests
 web/                   React + TypeScript UI with the PDF annotation editor
 scripts/               generators for the answer papers and the example export
-docs/                  the assignment brief and captured test output
+docs/                  captured test output
 ARCHITECTURE.md        how it works and why
 ```
 
@@ -189,7 +195,7 @@ asserts that the marks and the grading timestamp are untouched after an edit.
 
 ## Tests
 
-`npm test` — 81 tests, seven files, no network access and no API key. Captured output is in
+`npm test` — 102 tests, eight files, no network access and no API key. Captured output is in
 [`docs/test-output.txt`](docs/test-output.txt).
 
 The scenarios the brief asks for are in `server/tests/grading.test.ts`:

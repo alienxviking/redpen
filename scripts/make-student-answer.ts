@@ -1,5 +1,5 @@
 /**
- * Generates the student answer papers used to demonstrate and test GradeSense.
+ * Generates the student answer papers used to demonstrate and test RedPen.
  *
  * The main paper (`student-answer.pdf`) is the deliverable the assignment asks the
  * candidate to write: a realistic script that mixes correct points, missing points,

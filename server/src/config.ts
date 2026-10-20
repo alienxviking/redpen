@@ -21,8 +21,8 @@ dotenv.config({
   quiet: true,
 });
 
-export const DATA_DIR = process.env.GRADESENSE_DATA_DIR
-  ? path.resolve(process.env.GRADESENSE_DATA_DIR)
+export const DATA_DIR = process.env.REDPEN_DATA_DIR
+  ? path.resolve(process.env.REDPEN_DATA_DIR)
   : path.join(SERVER_ROOT, "data");
 
 export const FILES_DIR = path.join(DATA_DIR, "files");

@@ -124,7 +124,7 @@ export function App() {
     <div className="app">
       <header className="app-header">
         <div className="brand">
-          <h1>GradeSense</h1>
+          <h1>RedPen</h1>
           <span className="muted small">Explainable marking with on-page annotation</span>
         </div>
 
