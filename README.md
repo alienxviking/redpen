@@ -89,6 +89,8 @@ fixtures/
   error-key.md         every planted mistake, its correction and the mark it costs
   cases/               correct / incorrect / blank / OCR-damaged answer papers
   example-annotated.pdf  a worked annotated output
+  handwritten-answer.pdf     a handwritten script, read by transcription
+  handwritten-annotated.pdf  the same script, marked
 server/                Express + TypeScript API, grading pipeline, tests
 web/                   React + TypeScript UI with the PDF annotation editor
 scripts/               generators for the answer papers and the example export
@@ -147,7 +149,9 @@ plausible-looking wrong number.
 
 | Situation | What happens |
 |---|---|
-| Blank or near-blank paper | Short-circuits before any model call. Zero marks, flagged `blank_answer`, and the flag says it may be a scan needing OCR rather than a genuine zero. |
+| Paper with no text layer (scan, photo, handwriting) | Transcribed from the page image with a Gemini vision model before marking (see below). If no vision model is configured or the transcription fails, it is treated as blank and flagged for a human rather than marked. |
+| Text layer that looks like garbage | Phone scanner apps embed their own OCR, which turns handwriting into nonsense. A quality check catches this and re-reads the page by transcription instead. |
+| Blank or near-blank paper | Short-circuits before the grading call. Zero marks, flagged `blank_answer`. |
 | Model unreachable, rate-limited, timed out | Falls back to the offline grader, flags `model_unavailable` with the underlying reason, and marks the result degraded. |
 | Malformed model output | Tolerant parse (bare JSON, fenced JSON, JSON buried in prose), then one repair round-trip, then the offline grader. Flagged either way. |
 | Marks above the maximum | Clamped, flagged `marks_clamped`, and the warning records what the model originally said. |
@@ -224,10 +228,15 @@ diagram questions), and the full HTTP flow including annotation editing and expo
 
 These are deliberate, given the time budget.
 
-- **Scanned or handwritten papers are not OCR'd.** They extract to no text, so they are
-  correctly identified as unreadable and routed to human review rather than being scored.
-  Adding OCR means producing the same positioned-token structure from an OCR engine; the
-  rest of the pipeline would not change.
+- **Reading handwriting needs a Gemini key.** A scanned or handwritten paper is transcribed
+  page by page by a vision model that returns each line with a box on the page, which
+  becomes the same positioned-token structure the text-layer path produces, so nothing
+  downstream changes. Where the scanner left its own OCR layer, the transcription is
+  shifted to match that layer's geometry, since its positions are reliable even when its
+  words are not. Without a key such papers go to human review instead of being marked,
+  and a page that cannot be transcribed is reported, never silently scored as zero.
+  Quotes from a transcription are marked as such, because they are evidence about the
+  page rather than the page itself.
 - **The rubric is a JSON file, not parsed from the model-answer PDF.** The
   "total equals the sum of its parts" guarantee needs a machine-readable rubric whose
   arithmetic is validated on load. `fixtures/provided/rubric.json` is the transcription of

@@ -203,13 +203,11 @@ rather than producing a plausible wrong number.
 
 ## What I would do next
 
-1. **OCR** for scanned and handwritten scripts, emitting the same positioned-token
-   structure so nothing downstream changes.
-2. **Rubric parsing** from the model-answer PDF, with the teacher confirming the extracted
+1. **Rubric parsing** from the model-answer PDF, with the teacher confirming the extracted
    table before it is used — keeping the validated-arithmetic guarantee.
-3. **Region annotations for diagrams.** Diagram faults are currently anchored to the
+2. **Region annotations for diagrams.** Diagram faults are currently anchored to the
    sentence that describes them; asking the model for a bounding box on the rendered page
    would let a box go around the wrongly-wired voltmeter itself.
-4. **Calibration.** Grade a set of papers twice and track mark variance per rubric point,
+3. **Calibration.** Grade a set of papers twice and track mark variance per rubric point,
    to find where the rubric is ambiguous rather than where the model is weak.
 5. **SQLite** behind the same store interface once there is more than one marker.
