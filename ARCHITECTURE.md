@@ -210,4 +210,4 @@ rather than producing a plausible wrong number.
    would let a box go around the wrongly-wired voltmeter itself.
 3. **Calibration.** Grade a set of papers twice and track mark variance per rubric point,
    to find where the rubric is ambiguous rather than where the model is weak.
-5. **SQLite** behind the same store interface once there is more than one marker.
+4. **SQLite** behind the same store interface once there is more than one marker.
