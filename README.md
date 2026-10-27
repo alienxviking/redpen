@@ -15,8 +15,11 @@ tool is unsure, it says so instead of pretending.
 > **Supplied materials are not in this repo.** RedPen was built as a 36-hour take-home for
 > an AI/ML product engineering internship. The question paper, model answer and rubric were
 > supplied by the company and aren't mine to publish, so `fixtures/provided/` is empty here.
-> The app and the test suite need `fixtures/provided/rubric.json`; everything else —
+> The app needs `fixtures/provided/rubric.json` to grade; without it the test suite skips
+> the tests that mark against it and runs the rest (see [Tests](#tests)). Everything else —
 > the student answer papers, the error key, the cases and the code — is my own.
+
+Needs Node 22.12 or newer.
 
 ```bash
 npm install
@@ -59,6 +62,8 @@ adapter at OpenRouter, Together, vLLM or LM Studio with no code change.
 | Command | What it does |
 |---|---|
 | `npm test` | Runs the 102-test suite (no network, no API key) |
+| `npm run coverage` | The same, with coverage and the floors CI enforces |
+| `npm run lint` | ESLint over the server, web app and scripts |
 | `npm run seed` | Regenerates the answer papers in `fixtures/` |
 | `npm run example` | Writes `fixtures/example-annotated.pdf` — a worked annotated paper |
 | `npm run build` | Type-checks and builds both packages |
@@ -210,6 +215,23 @@ asserts that the marks and the grading timestamp are untouched after an edit.
 
 `npm test` — 102 tests, eight files, no network access and no API key. Captured output is in
 [`docs/test-output.txt`](docs/test-output.txt).
+
+From a fresh clone:
+
+```bash
+npm ci
+npm test            # or: npm run coverage
+```
+
+Without `fixtures/provided/rubric.json`, the 65 tests that mark against the supplied rubric
+skip, and the run says so up front: the grading scenarios, the annotated-PDF export, the
+Gemini and Groq adapters, rubric reconciliation and the grading half of the API flow. The
+other 37 run: text extraction, quote anchoring, the vision transcription parser, uploads,
+and the model-output checks that need no rubric. With the rubric in place all 102 run.
+
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs that fresh-clone set on
+every push and pull request, with lint, the type-check and build of both packages, the
+coverage floors and `npm audit`.
 
 The scenarios the brief asks for are in `server/tests/grading.test.ts`:
 
