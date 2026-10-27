@@ -68,7 +68,7 @@ adapter at OpenRouter, Together, vLLM or LM Studio with no code change.
 | Variable | Default | Purpose |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | *(unset)* | Enables the Claude grader. |
-| `GEMINI_API_KEY` | *(unset)* | Enables the Gemini grader (free tier). |
+| `GEMINI_API_KEY` | *(unset)* | Enables the Gemini grader (free tier), and transcription of handwritten and scanned papers. `GOOGLE_API_KEY` also works. |
 | `GROQ_API_KEY` | *(unset)* | Enables the Groq grader (free tier, text-only). |
 | `GRADER_PROVIDER` | `auto` | `auto` \| `anthropic` \| `gemini` \| `groq` \| `mock`. |
 | `GRADER_MODEL` | `claude-opus-5` | Claude model id. |
@@ -77,6 +77,15 @@ adapter at OpenRouter, Together, vLLM or LM Studio with no code change.
 | `GROQ_BASE_URL` | Groq | Any OpenAI-compatible endpoint. |
 | `PORT` | `5174` | API port. |
 | `BLANK_THRESHOLD` | `40` | Characters below which a paper is treated as blank. |
+| `GRADER_MAX_TOKENS` | `16000` | Token ceiling for one grading call. |
+| `GRADER_TIMEOUT_MS` | `120000` | How long to wait for the grader before degrading. |
+| `VISION_MODEL` | `gemini-flash-lite-latest` | Gemini model that transcribes papers with no text layer. |
+| `VISION_FALLBACK_MODELS` | `gemini-flash-latest,gemini-2.0-flash` | Tried in order when the vision model is busy. |
+| `VISION_TIMEOUT_MS` | `180000` | How long to wait for one transcription. |
+| `MAX_UPLOAD_BYTES` | `26214400` | Largest PDF the upload endpoint accepts (25 MB). |
+| `REDPEN_DATA_DIR` | `server/data` | Where uploads, extractions and the grading index are written. |
+
+All of these are in [`.env.example`](.env.example) with the same defaults.
 
 ---
 
