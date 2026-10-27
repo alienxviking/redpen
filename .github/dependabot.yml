@@ -1,0 +1,23 @@
+version: 2
+
+updates:
+  # One lockfile for both workspaces, so one entry covers server and web.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      # Minor and patch bumps together, one PR a week. Majors stay separate since
+      # they're the ones likely to need code changes.
+      compatible:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
