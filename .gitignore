@@ -8,6 +8,7 @@ server/data/exports/
 *.log
 .DS_Store
 *.tsbuildinfo
+coverage/
 .vite/
 submission/
 
