@@ -1,6 +1,8 @@
+import { existsSync } from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { DEFAULT_RUBRIC_PATH } from "../src/config.js";
 import type { ModelGrade } from "../src/domain/schema.js";
 import type { ExtractedDocument, RubricSpec } from "../src/domain/types.js";
 import { loadRubric } from "../src/domain/rubric.js";
@@ -14,6 +16,13 @@ import {
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const FIXTURES = path.resolve(here, "..", "..", "fixtures");
+
+/**
+ * Whether the supplied rubric is here. `fixtures/provided/` is not published (see the
+ * README), so on a fresh clone the tests that mark against it are skipped rather than
+ * failed, and everything that does not need it still runs.
+ */
+export const hasRubric = existsSync(DEFAULT_RUBRIC_PATH);
 
 export function fixture(name: string): string {
   return path.join(FIXTURES, name);

@@ -4,7 +4,7 @@ import { gradeAnswer } from "../src/services/grading/grader.js";
 import { MockGrader } from "../src/services/llm/mock.js";
 import { buildAnnotatedPdf } from "../src/services/pdf/annotatePdf.js";
 import { extractPdf } from "../src/services/pdf/extractText.js";
-import { extractFixture, readFixture, rubric } from "./helpers.js";
+import { extractFixture, hasRubric, readFixture, rubric } from "./helpers.js";
 
 async function gradedExample() {
   const [answerDoc, answerPdf, spec] = await Promise.all([
@@ -23,7 +23,7 @@ async function gradedExample() {
   return { ...record, answerPdf, answerDoc };
 }
 
-describe("annotated PDF export", () => {
+describe.skipIf(!hasRubric)("annotated PDF export", () => {
   it("draws every located annotation inside the bounds of its page", async () => {
     const { annotations, answerDoc } = await gradedExample();
     const placed = annotations.filter((a) => a.anchored);

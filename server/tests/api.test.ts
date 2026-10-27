@@ -4,7 +4,7 @@ import path from "node:path";
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Express } from "express";
-import { fixture, readFixture } from "./helpers.js";
+import { fixture, hasRubric, readFixture } from "./helpers.js";
 
 /**
  * End-to-end over the HTTP API: upload, grade, edit the annotation layer, export.
@@ -52,7 +52,7 @@ describe("health and rubric", () => {
     expect(response.body.degraded).toBe(true);
   });
 
-  it("serves the rubric the marks are computed against", async () => {
+  it.skipIf(!hasRubric)("serves the rubric the marks are computed against", async () => {
     const response = await request(app).get("/api/rubric").expect(200);
     expect(response.body.rubric.maxMarks).toBe(15);
     expect(response.body.rubric.questions).toHaveLength(3);
@@ -101,7 +101,7 @@ describe("grading, annotation editing and export", () => {
   let gradingId: string;
   let answerId: string;
 
-  it("grades an uploaded paper", async () => {
+  it.skipIf(!hasRubric)("grades an uploaded paper", async () => {
     const document = await uploadAnswer();
     answerId = document.id;
 
@@ -138,7 +138,7 @@ describe("grading, annotation editing and export", () => {
     await request(app).post("/api/gradings").send({}).expect(400);
   });
 
-  it("lists the grading in the history", async () => {
+  it.skipIf(!hasRubric)("lists the grading in the history", async () => {
     const response = await request(app).get("/api/gradings").expect(200);
     const entry = response.body.gradings.find((g: { id: string }) => g.id === gradingId);
     expect(entry).toBeDefined();
@@ -146,7 +146,7 @@ describe("grading, annotation editing and export", () => {
     expect(entry.annotationCount).toBeGreaterThan(0);
   });
 
-  it("edits an annotation's text without changing any marks", async () => {
+  it.skipIf(!hasRubric)("edits an annotation's text without changing any marks", async () => {
     const before = (await request(app).get(`/api/gradings/${gradingId}`).expect(200)).body;
     const target = before.annotations[0];
 
@@ -165,7 +165,7 @@ describe("grading, annotation editing and export", () => {
     expect(after.result.createdAt).toBe(before.result.createdAt);
   });
 
-  it("moves an annotation to new coordinates", async () => {
+  it.skipIf(!hasRubric)("moves an annotation to new coordinates", async () => {
     const before = (await request(app).get(`/api/gradings/${gradingId}`).expect(200)).body;
     const target = before.annotations[0];
     const moved = [{ page: 0, x: 100, y: 200, w: 180, h: 14 }];
@@ -180,7 +180,7 @@ describe("grading, annotation editing and export", () => {
     expect(response.body.annotation.anchorScore).toBe(1);
   });
 
-  it("re-locates an annotation when its quote is retyped", async () => {
+  it.skipIf(!hasRubric)("re-locates an annotation when its quote is retyped", async () => {
     const before = (await request(app).get(`/api/gradings/${gradingId}`).expect(200)).body;
     const target = before.annotations.find((a: { anchored: boolean }) => a.anchored);
 
@@ -193,7 +193,7 @@ describe("grading, annotation editing and export", () => {
     expect(response.body.annotation.rects.length).toBeGreaterThan(0);
   });
 
-  it("adds a teacher's own annotation", async () => {
+  it.skipIf(!hasRubric)("adds a teacher's own annotation", async () => {
     const response = await request(app)
       .post(`/api/gradings/${gradingId}/annotations`)
       .send({
@@ -208,14 +208,14 @@ describe("grading, annotation editing and export", () => {
     expect(response.body.annotation.type).toBe("layout");
   });
 
-  it("rejects an annotation with no rectangle to draw", async () => {
+  it.skipIf(!hasRubric)("rejects an annotation with no rectangle to draw", async () => {
     await request(app)
       .post(`/api/gradings/${gradingId}/annotations`)
       .send({ questionId: "q1", comment: "floating note", rects: [] })
       .expect(400);
   });
 
-  it("deletes an annotation", async () => {
+  it.skipIf(!hasRubric)("deletes an annotation", async () => {
     const before = (await request(app).get(`/api/gradings/${gradingId}`).expect(200)).body;
     const target = before.annotations[before.annotations.length - 1];
 
@@ -230,7 +230,7 @@ describe("grading, annotation editing and export", () => {
     expect(after.result.totalMarks).toBe(before.result.totalMarks);
   });
 
-  it("exports an annotated PDF without touching the original", async () => {
+  it.skipIf(!hasRubric)("exports an annotated PDF without touching the original", async () => {
     const originalBefore = await readFixture("student-answer.pdf");
 
     const response = await request(app)
@@ -252,7 +252,7 @@ describe("grading, annotation editing and export", () => {
     expect(Buffer.compare(originalBefore, originalAfter)).toBe(0);
   });
 
-  it("keeps history readable after a restart", async () => {
+  it.skipIf(!hasRubric)("keeps history readable after a restart", async () => {
     // A fresh app instance reads the same data directory from disk.
     const { resetStoreCache } = await import("../src/services/store/store.js");
     resetStoreCache();

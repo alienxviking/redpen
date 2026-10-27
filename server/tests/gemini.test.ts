@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { GeminiGrader } from "../src/services/llm/gemini.js";
 import { ProviderUnavailableError } from "../src/services/llm/provider.js";
-import { buildModelGrade, rubric } from "./helpers.js";
+import { buildModelGrade, hasRubric, rubric } from "./helpers.js";
 
 /**
  * The Gemini adapter, exercised against a stubbed fetch.
@@ -52,7 +52,7 @@ async function request() {
   };
 }
 
-describe("Gemini grader", () => {
+describe.skipIf(!hasRubric)("Gemini grader", () => {
   it("sends the answer PDF and the prompt, and returns the model's text", async () => {
     const spec = await rubric();
     const grade = buildModelGrade(spec, (_id, max) => max);

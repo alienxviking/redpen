@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { GroqGrader } from "../src/services/llm/groq.js";
 import { ProviderUnavailableError } from "../src/services/llm/provider.js";
-import { buildModelGrade, rubric } from "./helpers.js";
+import { buildModelGrade, hasRubric, rubric } from "./helpers.js";
 
 /**
  * The Groq adapter, exercised against a stubbed fetch - no key, no network.
@@ -58,7 +58,7 @@ async function request() {
   };
 }
 
-describe("Groq grader", () => {
+describe.skipIf(!hasRubric)("Groq grader", () => {
   it("posts an OpenAI-shaped chat completion and returns the content", async () => {
     const spec = await rubric();
     const grade = buildModelGrade(spec, (_id, max) => max);
@@ -164,7 +164,7 @@ describe("Groq grader", () => {
   });
 });
 
-describe("Groq is honest about not seeing the diagrams", () => {
+describe.skipIf(!hasRubric)("Groq is honest about not seeing the diagrams", () => {
   it("never sends the PDF, because the endpoint cannot read one", async () => {
     const spy = stubFetch(() => chat("{}"));
     await new GroqGrader("k").grade(await request());
@@ -190,7 +190,7 @@ describe("Groq is honest about not seeing the diagrams", () => {
   });
 });
 
-describe("json_object compatibility", () => {
+describe.skipIf(!hasRubric)("json_object compatibility", () => {
   it("mentions JSON in the messages, which OpenAI-compatible servers require", async () => {
     // Groq returns 400 for response_format json_object unless the word appears.
     const spy = stubFetch(() => chat("{}"));

@@ -13,10 +13,17 @@
     "dev:web": "npm run dev -w web",
     "build": "npm run build -w server && npm run build -w web",
     "test": "npm run test -w server",
+    "lint": "eslint .",
+    "coverage": "npm run coverage -w server",
     "seed": "npm run seed -w server",
     "example": "npm run example -w server"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^9.1.2",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "typescript-eslint": "^8.72.1"
   }
 }

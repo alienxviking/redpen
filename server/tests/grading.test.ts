@@ -6,6 +6,7 @@ import {
   buildModelGrade,
   extractFixture,
   failingProvider,
+  hasRubric,
   readFixture,
   rubric,
   stubProvider,
@@ -33,7 +34,7 @@ async function grade(fixtureName: string, provider: GraderProvider = new MockGra
   });
 }
 
-describe("grading scenarios", () => {
+describe.skipIf(!hasRubric)("grading scenarios", () => {
   it("a fully correct answer scores full marks", async () => {
     const { result } = await grade("cases/answer-correct.pdf");
 
@@ -179,7 +180,7 @@ describe("grading scenarios", () => {
   });
 });
 
-describe("invariants", () => {
+describe.skipIf(!hasRubric)("invariants", () => {
   it("rejects a result whose total does not match its parts", async () => {
     const { result } = await grade("student-answer.pdf");
     const tampered = { ...result, totalMarks: result.totalMarks + 1 };
