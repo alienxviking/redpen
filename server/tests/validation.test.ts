@@ -1,29 +1,29 @@
 import { describe, expect, it } from "vitest";
 import { parseModelOutput, reconcile } from "../src/services/grading/validate.js";
-import { buildModelGrade, extractFixture, rubric } from "./helpers.js";
+import { buildModelGrade, extractFixture, hasRubric, rubric } from "./helpers.js";
 
 describe("parsing model output", () => {
-  it("accepts a well-formed object that the SDK already parsed", async () => {
+  it.skipIf(!hasRubric)("accepts a well-formed object that the SDK already parsed", async () => {
     const spec = await rubric();
     const grade = buildModelGrade(spec, (_id, max) => max);
     const outcome = parseModelOutput("", grade);
     expect(outcome.ok).toBe(true);
   });
 
-  it("accepts bare JSON text", async () => {
+  it.skipIf(!hasRubric)("accepts bare JSON text", async () => {
     const spec = await rubric();
     const grade = buildModelGrade(spec, () => 0);
     expect(parseModelOutput(JSON.stringify(grade), null).ok).toBe(true);
   });
 
-  it("accepts JSON wrapped in a markdown fence", async () => {
+  it.skipIf(!hasRubric)("accepts JSON wrapped in a markdown fence", async () => {
     const spec = await rubric();
     const grade = buildModelGrade(spec, () => 0);
     const raw = "Here is the grading:\n```json\n" + JSON.stringify(grade) + "\n```\nHope that helps.";
     expect(parseModelOutput(raw, null).ok).toBe(true);
   });
 
-  it("accepts JSON buried in prose with braces inside strings", async () => {
+  it.skipIf(!hasRubric)("accepts JSON buried in prose with braces inside strings", async () => {
     const spec = await rubric();
     const grade = buildModelGrade(spec, () => 0);
     grade.overallFeedback = 'The student wrote "{not json}" here.';
@@ -45,14 +45,14 @@ describe("parsing model output", () => {
     expect(outcome.problem).toContain("questions");
   });
 
-  it("reports a problem for a truncated response", async () => {
+  it.skipIf(!hasRubric)("reports a problem for a truncated response", async () => {
     const spec = await rubric();
     const raw = JSON.stringify(buildModelGrade(spec, () => 1)).slice(0, 200);
     expect(parseModelOutput(raw, null).ok).toBe(false);
   });
 });
 
-describe("reconciling a grade against the rubric", () => {
+describe.skipIf(!hasRubric)("reconciling a grade against the rubric", () => {
   it("recomputes totals from the rubric points rather than trusting the model", async () => {
     const spec = await rubric();
     const doc = await extractFixture("student-answer.pdf");

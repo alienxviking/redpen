@@ -9,7 +9,7 @@ import {
 import { anchorQuote } from "../src/services/grading/anchor.js";
 import { gradeAnswer } from "../src/services/grading/grader.js";
 import { MockGrader } from "../src/services/llm/mock.js";
-import { readFixture, rubric } from "./helpers.js";
+import { hasRubric, readFixture, rubric } from "./helpers.js";
 
 /**
  * Reading a handwritten or scanned paper.
@@ -255,7 +255,7 @@ describe("a transcribed paper marks like any other", () => {
     expect(anchor.rects[0]!.y).toBeGreaterThan(A4.height * 0.7);
   });
 
-  it("grades it and flags that the marks came from a transcription", async () => {
+  it.skipIf(!hasRubric)("grades it and flags that the marks came from a transcription", async () => {
     const doc = documentFromVision(handwritten, [A4])!;
     const { result, annotations } = await gradeAnswer({
       rubric: await rubric(),
@@ -279,7 +279,7 @@ describe("a transcribed paper marks like any other", () => {
     expect(result.needsHumanReview).toBe(true);
   });
 
-  it("does not flag a paper that had a real text layer", async () => {
+  it.skipIf(!hasRubric)("does not flag a paper that had a real text layer", async () => {
     const { result } = await gradeAnswer({
       rubric: await rubric(),
       answerDoc: {
